@@ -1,4 +1,4 @@
-# Lyapunov Neural Ordinary Differential Equation Feedback Control Policies
+# Lyapunov Neural Ordinary Differential Equation State-Feedback Control Policies
 
 This repository contains the implementation of the Lyapunov Neural Ordinary Differential Equation Feedback Control Policies (LNODEC) in PyTorch. 
 
