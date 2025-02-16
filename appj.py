@@ -32,10 +32,17 @@ T_0_cons = 310.15 - k2cel
 T_bar = T_up - k2cel
 Cp = torch.tensor(ρ * cp * torch.pi * r * r * d / μ)
 φ_numerator = (2 * torch.pi * r * d * k * β / μ) / Cp * (T_bar - (T_b + T_inf) / 2) * (np.log(T_bar - T_inf) - np.log(T_bar - T_b))
+print(Cp)
+print(φ_numerator)
 normalization_factor = 40.
 
+P = torch.tensor([0.01, 1e-10], dtype = torch.float32).to(device)
+
+def objective_terminal(x: torch.tensor, u: torch.tensor) -> torch.tensor:
+    return P[0] * (x[-1, 1] - x_ref[1]) ** 2 + P[1] * (x[-1, 0] - x_ref[0]) ** 2
+
 def objective(x: torch.tensor, u: torch.tensor) -> torch.tensor:
-    result = (x[..., 1] - x_ref[1]) ** 2 + 1e-6 * (x[..., 0] - x_ref[0]) ** 2
+    result = P[0] * (x[..., 1] - x_ref[1]) ** 2 + P[1] * (x[..., 0] - x_ref[0]) ** 2
     return torch.sum(result, dim = -1).unsqueeze(-1)
     return (x[-1, 1] - x_ref[1]) ** 2 # old
 
@@ -86,6 +93,19 @@ appj_lya_obj = Case_Study(
     time_interval,
     dynamics,
     objective,
+    potential_objective,
+    penalty_list,
+    x_ref,
+    normalize,
+    None,
+    [u_lower, u_upper],
+)
+
+appj_terminal_obj = Case_Study(
+    init_cond,
+    time_interval,
+    dynamics,
+    objective_terminal,
     potential_objective,
     penalty_list,
     x_ref,
