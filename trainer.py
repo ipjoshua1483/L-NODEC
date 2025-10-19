@@ -67,9 +67,11 @@ class LNODECTrainer:
 
         # Sample batch of (x0, x_target) pairs
         # Note: For set-to-point stabilization, x_target should be FIXED
-        for b in range(batch_size):
-            x0, x_target = self.sample_pair()
-
+        for b in range(batch_size + 1):
+            if b == 0:
+                x0, x_target = self.sample_pair.nominal()
+            else:
+                x0, x_target = self.sample_pair()
             # Generate closed-loop trajectory with current policy
             trajectory, controls = self.simulator.rollout(
                 x0=x0, policy=self.policy, time_grid=time_grid, adjoint=True

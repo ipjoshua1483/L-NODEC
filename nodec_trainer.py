@@ -66,7 +66,6 @@ class NODECTrainer:
         # Sample batch of (x0, x_target) pairs
         for b in range(batch_size):
             x0, x_target = self.sample_pair()
-
             # Generate closed-loop trajectory with current policy
             trajectory, controls = self.simulator.rollout(
                 x0=x0, policy=self.policy, time_grid=time_grid, adjoint=True

@@ -1,6 +1,7 @@
 import torch
 from typing import Tuple
 
+torch.manual_seed(100)
 
 class UniformBoxSampler:
     """
@@ -91,6 +92,7 @@ class SetToPointSampler:
         x0_min: torch.Tensor,
         x0_max: torch.Tensor,
         x_target: torch.Tensor,  # FIXED target, not sampled!
+        # seed: int = None, 
         device: torch.device = None,
         dtype: torch.dtype = torch.float32,
     ):
@@ -106,6 +108,7 @@ class SetToPointSampler:
         self.x0_max = x0_max.to(device=device, dtype=dtype)
         self.x_target = x_target.to(device=device, dtype=dtype)
 
+        # self.seed = seed
         self.device = device
         self.dtype = dtype
 
@@ -126,6 +129,16 @@ class SetToPointSampler:
 
         # Return sampled IC with FIXED target
         return x0, self.x_target
+
+    def nominal(self):
+        """
+        Yields nominal initial condition
+
+        Returns:
+            x0_mean: [n_x] as specified in __init__
+            x_target: [n_x] FIXED target state (always the same!)
+        """
+        return self.x0_mean, self.x_target
 
 
 class NormalSetToPointSampler:
@@ -173,5 +186,16 @@ class NormalSetToPointSampler:
         x0 = self.x0_mean + self.x0_std * x0
 
         # Return sampled IC with FIXED target
+        # torch.stack([self.x0_mean, x0])
         return x0, self.x_target
+    
+    def nominal(self):
+        """
+        Yields nominal initial condition
+
+        Returns:
+            x0_mean: [n_x] as specified in __init__
+            x_target: [n_x] FIXED target state (always the same!)
+        """
+        return self.x0_mean, self.x_target
 
