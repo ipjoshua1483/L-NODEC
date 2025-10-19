@@ -139,6 +139,15 @@ class SetToPointSampler:
             x_target: [n_x] FIXED target state (always the same!)
         """
         return self.x0_mean, self.x_target
+    
+    def sample(self, n, seed):
+        torch.manual_seed(seed)
+        x0 = (
+            torch.rand((n, *self.x0_min.shape), device=self.device, dtype=self.dtype)
+            * (self.x0_max - self.x0_min)
+            + self.x0_min
+        )
+        return x0, self.x_target
 
 
 class NormalSetToPointSampler:
@@ -198,4 +207,6 @@ class NormalSetToPointSampler:
             x_target: [n_x] FIXED target state (always the same!)
         """
         return self.x0_mean, self.x_target
+
+
 
