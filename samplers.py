@@ -138,7 +138,7 @@ class SetToPointSampler:
             x0_mean: [n_x] as specified in __init__
             x_target: [n_x] FIXED target state (always the same!)
         """
-        return self.x0_mean, self.x_target
+        return (self.x0_min + self.x0_max) / 2, self.x_target
     
     def sample(self, n, seed):
         torch.manual_seed(seed)
